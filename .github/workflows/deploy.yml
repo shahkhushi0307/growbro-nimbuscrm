@@ -29,5 +29,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
           publish_branch: gh-pages
+          nojekyll: true
           keep_files: false
           allow_empty_commit: false
