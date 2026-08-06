@@ -2,62 +2,93 @@
 
 A marketing landing page for NimbusCRM, a CRM built for small business owners who live on WhatsApp.
 
+This repository is a **same-to-same mirror** of the live reference site
+[`growbro-nimbusCRM-tan.vercel.app`](https://growbro-nimbusCRM-tan.vercel.app),
+replicated section-for-section (copy, layout, data, and interactions).
+
 ## Tech Stack
 
-- Next.js 15.5 (App Router, Turbopack, static prerendering)
+- Next.js 15.5 (App Router, `src/` directory, Turbopack)
 - TypeScript
-- Tailwind CSS v4 (`@theme` color tokens)
-- Framer Motion (scroll-reveals, staggered load-ins, hover/tap micro-interactions)
+- Tailwind CSS v4 (`@theme` color tokens, utility classes)
+- Framer Motion (staggered scroll reveals, hero chat-mock sequence, hover/tap micro-interactions)
 - lucide-react (icons)
-- Inter (next/font/google)
+- Inter (via `next/font/google`), Droid Serif (headlines, via `@import`)
 
-## Layout Structure
+## Project Layout
 
-A single `src/app/page.tsx` composes 10 sections in spec order: `Nav`, `Hero`, `LogoMarquee`,
-`Testimonials`, `Features`, `StatBlock`, `PartnerStrip`, `Pricing`, `ClosingCTA`, `Footer`.
+```
+src/
+├── app/
+│   ├── favicon.ico
+│   ├── globals.css       # Tailwind tokens + .btn / marquee / eyebrow utilities
+│   ├── layout.tsx        # Root layout (Inter font, metadata, flex min-h-full body)
+│   └── page.tsx          # Composes the 12 sections in order
+├── components/
+│   ├── Navbar/Navbar.tsx        ── sticky nav (Product / Pricing / About / Contact + CTA)
+│   ├── Hero/Hero.tsx            ── animated WhatsApp chat mock
+│   ├── LogoMarquee/LogoMarquee.tsx
+│   ├── Features/Features.tsx    ── 3 story cards
+│   ├── StatBlock/StatBlock.tsx   ── count-up stats
+│   ├── Testimonials/Testimonials.tsx
+│   ├── CaseStudies/CaseStudies.tsx
+│   ├── TalentShowcase/TalentShowcase.tsx
+│   ├── Pricing/Pricing.tsx
+│   ├── Insights/Insights.tsx
+│   ├── ClosingCTA/ClosingCTA.tsx
+│   ├── Footer/Footer.tsx
+│   └── ui/Button.tsx            ── shared `.btn` variant system
+├── data/content.ts               # Copy + content models
+└── lib/
+    ├── motion.ts                 # Framer Motion variants (fadeUp, stagger, …)
+    └── useCountUp.ts             # Viewport-triggered numeric count-up
+```
 
-- `src/app/globals.css` — Tailwind v4 `@theme` block defining the design tokens
-  (charcoal, cream, brand, smoke, ink) plus the `marquee` keyframes utility.
-- `src/app/layout.tsx` — root layout with Inter font and reduced-motion guard.
-- `src/lib/animations.ts` — shared Framer Motion variant objects
-  (`revealItem`, `staggerContainer`, `heroStagger`, `heroItem`, `navFade`).
-- `src/components/FadeIn.tsx` — reusable `FadeInSection`, `Stagger`, and `CountUp`
-  primitives built on `useInView` for viewport-triggered animation.
-- `src/components/*` — one file per section.
+Sections in `page.tsx`: `Navbar → Hero → LogoMarquee → Features → StatBlock →
+Testimonials → CaseStudies → TalentShowcase → Pricing → Insights → ClosingCTA → Footer`.
 
 ## Design Decisions
 
-- **Andela-style hero:** the Hero section mirrors a real product homepage with a headline,
-  subtext, two motion buttons, and a WhatsApp-style chat mock that simulates a live demo
-  request (sequential bubble reveal + a "Hot Lead" chip bounce at 1.8s).
-- **Trust signals first:** `LogoMarquee`, `Testimonials`, and `PartnerStrip` establish
-  credibility before the feature grid, and `Pricing` re-uses the same `Stagger` + card-lift
-  pattern for consistency.
-- **Animations are additive:** motion is used only for viewport reveals, the hero load-in
-  sequence, and hover/tap micro-interactions — never for layout. `prefers-reduced-motion`
-  falls back to instant state changes via the global CSS guard.
-- **Hover states avoid layout shift:** buttons use `scale` + `brightness`
-  transitions rather than border-width changes; cards lift with `y` only.
-- **Mobile navigation:** the `Nav` collapses to a hamburger menu that expands a
-  full-width sheet with its own Demo/Trial buttons, matching desktop order without
-  duplicating link state.
+- **Palette:** near-black charcoal (`#132128`) background with WhatsApp-adjacent signal-green
+  emerald accents, so the product feels native to the messengers it automates.
+- **Andela.com** is used as a structural/interaction reference
+  (hero → trust strips → feature grid → stat strip → closing CTA)
+  while **GrowBro AI's real public site** informs the proof points and copy patterns.
+- **Motion is additive:** staggered scroll-reveal, a hero chat-mock load-in sequence,
+  and hover/tap micro-interactions (`scale`, `brightness`) — never layout shifts.
+  `prefers-reduced-motion` is respected.
+- **Animations:** a `carousel-track` marquee (paused on hover) for industry logos,
+  and a `requestAnimationFrame`-based count-up on the stats.
+- **Buttons:** a shared `ui/Button` component implementing the `.btn` system
+  (dark / emerald / outline / white / white-outline) with an animated arrow on hover.
 
-**Fix note:** all Framer Motion easing values are camelCase named easings (e.g. `"easeOut"`)
-rather than CSS kebab strings (`"ease-out"`), which the library does not accept.
+## Environments & Deployment
 
-## Responsiveness
+`next.config.ts` is environment-aware so the same source deploys to **both** hosts:
 
-- Max-width container `max-w-7xl mx-auto` with `px-6 md:px-8` gutters across sections.
-- Breakpoint strategy: base = mobile (375px), `md:` = tablet (768px), `lg:`/`max-w-7xl` =
-  desktop (1440px). Grids become columns at `md` (`sm:grid-cols-2 lg:grid-cols-3`) and the
-  Nav desktop links / CTA buttons collapse into a mobile sheet at `md:hidden`.
-- The Hero chat mock and pricing card grids re-flow; the LogoMarquee dual-marquee keeps
-  logos scrolling horizontally on all widths.
+| Host | Env | `output` | `basePath` |
+|------|-----|-----------|------------|
+| Vercel | `VERCEL=1` (set automatically) | default build | `""` (root) |
+| GitHub Pages | `GITHUB_PAGES=true` | `"export"` + `out/` | `/growbro-nimbusCRM` |
+
+- **Vercel:** linked to GitHub — every push to `main` auto-deploys to
+  https://growbro-nimbusCRM-tan.vercel.app
+- **GitHub Pages:** built via `peaceiris/actions-gh-pages` on the `gh-pages` branch
+  (deploy workflow in `.github/workflows/`). Build with `GITHUB_PAGES=true`:
+  ```bash
+  GITHUB_PAGES=true npm run build   # exports to /out
+  ```
 
 ## Development
 
 ```bash
-npm run dev      # localhost:3000
-npm run lint     # eslint
-npm run build    # next build --turbopack
+npm install       # dependencies
+npm run dev       # local dev at http://localhost:3000
+npm run build     # production build
+npm run lint      # ESLint
 ```
+
+## Links
+
+- Live (Vercel): https://growbro-nimbusCRM-tan.vercel.app
+- Source (GitHub): https://github.com/shahkhushi0307/growbro-nimbuscrm
