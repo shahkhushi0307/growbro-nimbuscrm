@@ -3,14 +3,15 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
-  subsets: ["latin"],
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "NimbusCRM — Turn WhatsApp chats into paying customers",
+  title: "NimbusCRM",
   description:
-    "NimbusCRM tracks every lead across WhatsApp, Instagram, and email in one inbox, so small business owners never miss a sale.",
+    "NimbusCRM — a CRM built for small business owners who live on WhatsApp.",
 };
 
 export default function RootLayout({
@@ -19,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+    <html lang="en" className={`${inter.variable} antialiased`}>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

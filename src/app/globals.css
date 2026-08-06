@@ -1,76 +1,297 @@
+@import url("https://fonts.googleapis.com/css2?family=Droid+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import "tailwindcss";
 
-@theme inline {
-  /* Color tokens (NimbusCRM design system) */
-  --color-charcoal: #0b0d0f;
-  --color-charcoal-850: #14171a;
-  --color-cream: #f6f5f1;
-  --color-brand: #3ed598;
-  --color-brand-950: #1f5f44;
-  --color-smoke: #f5f5f5;
-  --color-smoke-300: #9ca3af;
-  --color-ink: #12141a;
-  --color-ink-300: #5b6169;
-
-  /* Typography */
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+@theme {
+  --color-emerald: #338632;
+  --color-emerald-light: #7fc87c;
+  --color-emerald-lighter: #d9eed8;
+  --color-emerald-lightest: #ecf7ec;
+  --color-emerald-dark: #245a23;
+  --color-emerald-darker: #163a16;
+  --color-kale: #307c84;
+  --color-kale-dark: #205257;
+  --color-kale-darker: #132128;
+  --color-kale-light: #7cbfc7;
+  --color-kale-lighter: #e0f3f5;
+  --color-kale-lightest: #f0fafb;
+  --color-ink: #132128;
+  --color-almost-white: #fafafa;
+  --color-green-black: #717a7e;
+  --color-dark-green-black: #424d53;
+  --color-darker-green-black: #2b373d;
+  --color-light-green-black: #a1a6a9;
+  --color-lighter-green-black: #e7e9ea;
 }
 
-@theme {
-  --tracking-tight: -0.02em;
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Droid Serif", Georgia, serif;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
 }
 
 body {
-  @apply bg-charcoal text-smoke font-sans antialiased;
+  background-color: var(--color-ink);
+  color: var(--color-ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  letter-spacing: -0.3px;
 }
 
-:where(a, button, input, textarea, select, summary):focus-visible {
-  @apply outline-2 outline-offset-3 outline-brand rounded-full;
+::selection {
+  background-color: var(--color-emerald-light);
+  color: var(--color-kale-darker);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+section[id] {
+  scroll-margin-top: 5rem;
 }
 
-@layer utilities {
-  @keyframes marquee-left {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-  @keyframes marquee-right {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(50%);
-    }
-  }
-  .marquee-left {
-    animation: marquee-left 22s linear infinite;
-  }
-  .marquee-right {
-    animation: marquee-right 26s linear infinite;
-  }
-  .marquee-pause:hover {
-    animation-play-state: paused;
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Droid Serif", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* --- Layout helpers --- */
+
+.container-x {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 90rem;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .container-x {
+    padding-inline: 2rem;
   }
 }
 
+.section-pad {
+  padding-block: 72px;
+}
+
+@media (min-width: 1024px) {
+  .section-pad {
+    padding-block: 128px;
+  }
+}
+
+/* --- Accent typography (matches Andela text-color-emerald em) --- */
+
+@utility serif-em {
+  font-family: "Droid Serif", Georgia, serif;
+  font-style: italic;
+  color: var(--color-emerald);
+}
+
+/* --- Marquee (Andela: carousel-track 50s linear infinite reverse) --- */
+
+@keyframes carousel-track {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+.marquee {
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 5rem;
+  margin-right: 5rem;
+  will-change: transform;
+  animation: carousel-track 50s linear infinite;
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-scrim {
+  pointer-events: none;
+  background-image: linear-gradient(90deg, var(--color-white), transparent);
+  width: 20vw;
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 2;
+}
+
+.marquee-scrim.is-right {
+  background-image: linear-gradient(270deg, var(--color-white), transparent);
+  inset: 0 0 0 auto;
+}
+
+/* --- Buttons (Andela .button system) --- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 1600px;
+  padding: 1rem 1.5rem;
+  background-color: var(--color-kale-darker);
+  color: var(--color-white);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow 0.2s, padding-right 0.2s, background-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.btn .btn-arrow {
+  position: absolute;
+  right: 1.5rem;
+  display: flex;
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn:hover {
+  color: var(--color-emerald);
+  padding-right: 3.25rem;
+  box-shadow: 0 3px 4px rgb(0 0 0 / 0.12);
+}
+
+.btn:hover .btn-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.btn--emerald {
+  border-color: var(--color-emerald-light);
+  background-color: var(--color-emerald-light);
+  color: var(--color-kale-darker);
+}
+
+.btn--emerald:hover {
+  color: var(--color-kale-darker);
+  padding-right: 1.5rem;
+}
+
+.btn--emerald:hover .btn-arrow {
+  color: var(--color-kale-darker);
+}
+
+.btn--outline {
+  border-color: var(--color-ink);
+  background-color: transparent;
+  color: var(--color-emerald);
+}
+
+.btn--outline:hover {
+  color: var(--color-emerald-light);
+}
+
+.btn--outline .btn-arrow {
+  color: var(--color-emerald);
+}
+
+.btn--white {
+  border-color: var(--color-white);
+  background-color: var(--color-white);
+  color: var(--color-ink);
+}
+
+.btn--white:hover {
+  color: var(--color-emerald);
+  padding-right: 1.5rem;
+  box-shadow: none;
+}
+
+.btn--white-outline {
+  border-color: var(--color-white);
+  background-color: transparent;
+  color: var(--color-white);
+}
+
+.btn--white-outline:hover {
+  color: var(--color-emerald-light);
+}
+
+.btn--white-outline .btn-arrow {
+  color: var(--color-emerald-light);
+}
+
+.btn--small {
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.btn--small:hover {
+  padding-right: 3rem;
+}
+
+.btn--small .btn-arrow {
+  right: 1rem;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+/* Text link with arrow (Andela .button-link) */
+
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--color-emerald);
+  font-size: 1.0625rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.btn-link--sm {
+  font-size: 0.875rem;
+}
+
+.btn-link--light {
+  color: var(--color-emerald-light);
+}
+
+.btn-link--light:hover {
+  color: var(--color-emerald);
+}
+
+/* --- Eyebrow label --- */
+
+@utility eyebrow {
+  display: inline-block;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-emerald);
+}
