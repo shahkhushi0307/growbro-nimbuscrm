@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
 export const metadata: Metadata = {
-  title: "NimbusCRM",
+  title: "NimbusCRM — Turn WhatsApp chats into paying customers",
   description:
-    "A CRM built for small business owners who live on WhatsApp.",
+    "NimbusCRM tracks every lead across WhatsApp, Instagram, and email in one inbox, so small business owners never miss a sale.",
 };
 
 export default function RootLayout({
@@ -13,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   );
